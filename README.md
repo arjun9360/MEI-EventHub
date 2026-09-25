@@ -22,3 +22,9 @@ npm run dev
 ---
 
 © 2026 MEI EventHub — Mahendra Educational Institutions. All Rights Reserved. | Version 2.4.0
+
+Team Name : Digital Innovators
+Team Member : Arjun S
+              Abishek A
+Department : B.E - CSE
+College : Mahendra Institute of Technology
