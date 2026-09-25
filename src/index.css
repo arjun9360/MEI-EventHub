@@ -1,0 +1,126 @@
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 33% 16%;
+    --foreground: 200 40% 80%;
+
+    --card: 209 40% 18%;
+    --card-foreground: 200 40% 80%;
+
+    --popover: 209 40% 18%;
+    --popover-foreground: 200 40% 80%;
+
+    --primary: 174 73% 47%;
+    --primary-foreground: 210 33% 10%;
+
+    --secondary: 210 40% 22%;
+    --secondary-foreground: 200 40% 80%;
+
+    --muted: 210 30% 20%;
+    --muted-foreground: 200 20% 55%;
+
+    --accent: 205 55% 34%;
+    --accent-foreground: 200 40% 90%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 210 30% 25%;
+    --input: 210 30% 25%;
+    --ring: 174 73% 47%;
+
+    --radius: 0.75rem;
+
+    --deep-blue: 210 78% 16%;
+    --gradient-highlight: 210 60% 24%;
+    --light-accent: 174 73% 47%;
+    --text-color: 200 40% 61%;
+    --soft-grey: 216 20% 96%;
+
+    --sidebar-background: 210 40% 12%;
+    --sidebar-foreground: 200 40% 80%;
+    --sidebar-primary: 174 73% 47%;
+    --sidebar-primary-foreground: 210 33% 10%;
+    --sidebar-accent: 210 40% 18%;
+    --sidebar-accent-foreground: 200 40% 80%;
+    --sidebar-border: 210 30% 20%;
+    --sidebar-ring: 174 73% 47%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Calibri', 'Segoe UI', sans-serif;
+    font-style: italic;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'EB Garamond', 'Times New Roman', serif;
+    font-style: italic;
+  }
+}
+
+@layer utilities {
+  .font-heading {
+    font-family: 'EB Garamond', 'Times New Roman', serif;
+    font-style: italic;
+  }
+
+  .font-content {
+    font-family: 'Calibri', 'Segoe UI', sans-serif;
+    font-style: italic;
+  }
+
+  .gradient-card {
+    background: linear-gradient(135deg, hsl(var(--deep-blue)), hsl(var(--gradient-highlight)));
+  }
+
+  .gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--accent)), hsl(var(--light-accent)));
+  }
+
+  .glow-teal {
+    box-shadow: 0 0 20px hsl(var(--light-accent) / 0.3), 0 0 60px hsl(var(--light-accent) / 0.1);
+  }
+
+  .text-glow {
+    text-shadow: 0 0 20px hsl(var(--light-accent) / 0.5);
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px hsl(174 73% 47% / 0.2); }
+  50% { box-shadow: 0 0 40px hsl(174 73% 47% / 0.4); }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.6s ease-out forwards;
+}

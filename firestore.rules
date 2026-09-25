@@ -1,0 +1,148 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Default-deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Connection validation document
+    match /test/{testId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Global security primitives
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+    function incoming() {
+      return request.resource.data;
+    }
+    function existing() {
+      return resource.data;
+    }
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+    function isStaffOrAdmin() {
+      return isSignedIn() && (
+        (request.auth.token.email != null && request.auth.token.email == 'arjun936053@gmail.com') ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['hod', 'organizer', 'staff', 'volunteer'])
+      );
+    }
+
+    // Users Collection
+    match /users/{userId} {
+      allow get: if isSignedIn();
+      allow list: if isSignedIn();
+      allow create: if isOwner(userId) &&
+        isValidId(userId) &&
+        incoming().uid == userId &&
+        incoming().email is string &&
+        incoming().email.size() <= 100 &&
+        incoming().displayName is string &&
+        incoming().displayName.size() <= 100 &&
+        incoming().role in ['hod', 'staff', 'organizer', 'student', 'external', 'volunteer'];
+      allow update: if isOwner(userId) &&
+        incoming().uid == existing().uid &&
+        incoming().email == existing().email;
+      allow delete: if isOwner(userId) || isStaffOrAdmin();
+    }
+
+    // Events Collection
+    match /events/{eventId} {
+      allow read: if true;
+      allow create: if isSignedIn() &&
+        isValidId(eventId) &&
+        incoming().id == eventId &&
+        incoming().title is string &&
+        incoming().title.size() <= 200 &&
+        incoming().totalSlots is number &&
+        incoming().totalSlots >= 0 &&
+        incoming().fee is number &&
+        incoming().fee >= 0;
+      allow update: if isSignedIn() &&
+        incoming().id == existing().id &&
+        (isStaffOrAdmin() || (existing().creatorId != null && existing().creatorId == request.auth.uid) ||
+         incoming().diff(existing()).affectedKeys().hasOnly(['registeredCount', 'popularity', 'status', 'sessions', 'updatedAt']));
+      allow delete: if isSignedIn() &&
+        (isStaffOrAdmin() || (existing().creatorId != null && existing().creatorId == request.auth.uid));
+    }
+
+    // Venues Collection
+    match /venues/{venueId} {
+      allow read: if true;
+      allow create: if isSignedIn() &&
+        isValidId(venueId) &&
+        incoming().id == venueId &&
+        incoming().name is string &&
+        incoming().name.size() <= 100 &&
+        incoming().capacity is number &&
+        incoming().capacity >= 0;
+      allow update: if isSignedIn() &&
+        incoming().id == existing().id;
+      allow delete: if isSignedIn() && isStaffOrAdmin();
+    }
+
+    // Registrations Collection (Tickets & Passes)
+    match /registrations/{registrationId} {
+      allow read: if true;
+      allow create: if isSignedIn() &&
+        isValidId(registrationId) &&
+        incoming().id == registrationId &&
+        incoming().name is string &&
+        incoming().name.size() <= 100 &&
+        incoming().eventId is string;
+      allow update: if isSignedIn() &&
+        incoming().id == existing().id;
+      allow delete: if isSignedIn();
+    }
+
+    // Volunteers Collection
+    match /volunteers/{volunteerId} {
+      allow read: if true;
+      allow create: if isSignedIn() &&
+        isValidId(volunteerId) &&
+        incoming().id == volunteerId &&
+        incoming().name is string &&
+        incoming().name.size() <= 100;
+      allow update: if isSignedIn() &&
+        incoming().id == existing().id;
+      allow delete: if isSignedIn();
+    }
+
+    // Feedbacks Collection
+    match /feedbacks/{feedbackId} {
+      allow read: if true;
+      allow create: if isSignedIn() &&
+        isValidId(feedbackId) &&
+        incoming().id == feedbackId &&
+        incoming().studentName is string &&
+        incoming().studentName.size() <= 100 &&
+        incoming().rating is number &&
+        incoming().rating >= 1 &&
+        incoming().rating <= 5;
+      allow update: if isSignedIn() &&
+        incoming().id == existing().id;
+      allow delete: if isSignedIn() && isStaffOrAdmin();
+    }
+
+    // Notifications Collection
+    match /notifications/{notificationId} {
+      allow read: if true;
+      allow create: if isSignedIn() &&
+        isValidId(notificationId) &&
+        incoming().id == notificationId &&
+        incoming().title is string &&
+        incoming().title.size() <= 150;
+      allow update: if isSignedIn() &&
+        incoming().id == existing().id;
+      allow delete: if isSignedIn();
+    }
+  }
+}

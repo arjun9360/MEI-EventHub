@@ -1,0 +1,7 @@
+{
+  "name": "MEI EventHub",
+  "description": "MEI EventHub - Event Management and Collaboration Platform",
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

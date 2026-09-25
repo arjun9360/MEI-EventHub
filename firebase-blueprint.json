@@ -1,0 +1,186 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile with role-based access information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "email": { "type": "string", "description": "User email address", "maxLength": 100 },
+        "displayName": { "type": "string", "description": "User full name", "maxLength": 100 },
+        "photoURL": { "type": "string", "description": "Profile avatar URL", "maxLength": 500 },
+        "role": {
+          "type": "string",
+          "enum": ["hod", "staff", "organizer", "student", "external", "volunteer"],
+          "description": "Assigned institutional role"
+        },
+        "institutionalId": { "type": "string", "description": "College Roll Number or Faculty ID", "maxLength": 50 },
+        "department": { "type": "string", "description": "Academic Department", "maxLength": 100 },
+        "institution": { "type": "string", "description": "Institution name or college code", "maxLength": 100 },
+        "createdAt": { "type": "string", "description": "Account creation timestamp" },
+        "updatedAt": { "type": "string", "description": "Last update timestamp" }
+      },
+      "required": ["uid", "email", "displayName", "role"]
+    },
+    "Event": {
+      "title": "Event",
+      "description": "Campus event details, timings, and configuration",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Event unique identifier" },
+        "title": { "type": "string", "description": "Event title", "maxLength": 200 },
+        "department": { "type": "string", "description": "Host department", "maxLength": 100 },
+        "institution": { "type": "string", "description": "Host institution", "maxLength": 100 },
+        "organizer": { "type": "string", "description": "Lead organizer name", "maxLength": 100 },
+        "category": { "type": "string", "description": "Category of event", "maxLength": 100 },
+        "mode": { "type": "string", "enum": ["offline", "online", "hybrid"], "description": "Mode of delivery" },
+        "date": { "type": "string", "description": "Event date (YYYY-MM-DD)" },
+        "time": { "type": "string", "description": "Event start time" },
+        "endTime": { "type": "string", "description": "Event end time" },
+        "venue": { "type": "string", "description": "Allocated venue", "maxLength": 100 },
+        "lastRegistrationDate": { "type": "string", "description": "Registration deadline date" },
+        "lastRegistrationTime": { "type": "string", "description": "Registration deadline time" },
+        "totalSlots": { "type": "number", "description": "Maximum participant capacity" },
+        "registeredCount": { "type": "number", "description": "Current number of registered attendees" },
+        "openTo": { "type": "string", "enum": ["all_departments", "specific_department"], "description": "Department access scope" },
+        "collegeAccess": { "type": "string", "enum": ["all_colleges", "mei_only", "specific_college"], "description": "College access scope" },
+        "description": { "type": "string", "description": "Detailed description of the event", "maxLength": 2000 },
+        "status": {
+          "type": "string",
+          "enum": ["draft", "pending", "published", "registration_open", "registration_closed", "ongoing", "completed", "cancelled"],
+          "description": "Event lifecycle status"
+        },
+        "popularity": { "type": "number", "description": "Popularity score" },
+        "fee": { "type": "number", "description": "Registration fee in INR" },
+        "participationType": { "type": "string", "enum": ["individual", "team"], "description": "Participation format" },
+        "contact": { "type": "string", "description": "Contact info", "maxLength": 150 },
+        "registrationType": { "type": "string", "enum": ["internal", "external"], "description": "Registration type" },
+        "registrationUrl": { "type": "string", "description": "External registration form URL", "maxLength": 500 },
+        "meetingUrl": { "type": "string", "description": "Virtual meeting room link", "maxLength": 500 },
+        "featured": { "type": "boolean", "description": "Whether featured on homepage" },
+        "creatorId": { "type": "string", "description": "UID of the creator or organizer" },
+        "createdAt": { "type": "string", "description": "Creation timestamp" },
+        "updatedAt": { "type": "string", "description": "Last update timestamp" }
+      },
+      "required": ["id", "title", "department", "institution", "organizer", "date", "status"]
+    },
+    "Venue": {
+      "title": "Venue",
+      "description": "Auditoriums, seminar halls, and campus facilities",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Venue unique identifier" },
+        "name": { "type": "string", "description": "Venue name", "maxLength": 100 },
+        "building": { "type": "string", "description": "Campus building", "maxLength": 100 },
+        "floor": { "type": "string", "description": "Floor level", "maxLength": 50 },
+        "room": { "type": "string", "description": "Room number", "maxLength": 50 },
+        "capacity": { "type": "number", "description": "Seating capacity" },
+        "type": { "type": "string", "description": "Venue classification", "maxLength": 100 },
+        "status": { "type": "string", "enum": ["available", "occupied", "maintenance"], "description": "Current availability status" },
+        "active": { "type": "boolean", "description": "Operational flag" },
+        "utilization": { "type": "number", "description": "Usage percentage" },
+        "updatedAt": { "type": "string", "description": "Last update timestamp" }
+      },
+      "required": ["id", "name", "building", "capacity", "status", "active"]
+    },
+    "Registration": {
+      "title": "Registration",
+      "description": "Participant event ticket and admission record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Registration ticket ID" },
+        "eventId": { "type": "string", "description": "Referenced event ID" },
+        "userId": { "type": "string", "description": "User UID or registration creator" },
+        "name": { "type": "string", "description": "Participant name", "maxLength": 100 },
+        "regId": { "type": "string", "description": "Institutional roll number or pass ID", "maxLength": 50 },
+        "department": { "type": "string", "description": "Department name", "maxLength": 100 },
+        "institution": { "type": "string", "description": "College name", "maxLength": 100 },
+        "status": { "type": "string", "enum": ["confirmed", "waitlisted", "attended", "no-show"], "description": "Attendance status" },
+        "createdAt": { "type": "string", "description": "Registration timestamp" }
+      },
+      "required": ["id", "eventId", "name", "regId", "status"]
+    },
+    "Volunteer": {
+      "title": "Volunteer",
+      "description": "Volunteer duties and event coordination assignments",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Assignment unique ID" },
+        "eventId": { "type": "string", "description": "Associated event ID" },
+        "name": { "type": "string", "description": "Volunteer name", "maxLength": 100 },
+        "regId": { "type": "string", "description": "Student roll number", "maxLength": 50 },
+        "responsibility": { "type": "string", "description": "Assigned duty or task", "maxLength": 150 },
+        "status": { "type": "string", "enum": ["assigned", "checked-in", "completed"], "description": "Duty status" },
+        "updatedAt": { "type": "string", "description": "Update timestamp" }
+      },
+      "required": ["id", "eventId", "name", "regId", "responsibility", "status"]
+    },
+    "Feedback": {
+      "title": "Feedback",
+      "description": "Post-event participant survey review and evaluation",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Feedback unique ID" },
+        "eventId": { "type": "string", "description": "Associated event ID" },
+        "userId": { "type": "string", "description": "Reviewer UID" },
+        "studentName": { "type": "string", "description": "Student name", "maxLength": 100 },
+        "regId": { "type": "string", "description": "Registration ID", "maxLength": 50 },
+        "department": { "type": "string", "description": "Department", "maxLength": 100 },
+        "rating": { "type": "number", "description": "Overall score 1-5" },
+        "contentQuality": { "type": "number", "description": "Content quality 1-5" },
+        "organization": { "type": "number", "description": "Organization score 1-5" },
+        "venueRating": { "type": "number", "description": "Venue rating 1-5" },
+        "overallExperience": { "type": "number", "description": "Overall experience 1-5" },
+        "comment": { "type": "string", "description": "Student written evaluation feedback", "maxLength": 1000 },
+        "submittedAt": { "type": "string", "description": "Submission timestamp" }
+      },
+      "required": ["id", "eventId", "studentName", "rating", "comment"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "System and event alerts for campus stakeholders",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Notification unique ID" },
+        "title": { "type": "string", "description": "Alert title", "maxLength": 150 },
+        "detail": { "type": "string", "description": "Alert message content", "maxLength": 500 },
+        "time": { "type": "string", "description": "Display time label", "maxLength": 50 },
+        "type": { "type": "string", "enum": ["registration", "schedule", "venue", "reminder"], "description": "Category of alert" },
+        "read": { "type": "boolean", "description": "Read status" },
+        "userId": { "type": "string", "description": "Target user UID or 'all'" },
+        "createdAt": { "type": "string", "description": "Timestamp" }
+      },
+      "required": ["id", "title", "detail", "type", "read"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User profiles and credentials"
+    },
+    "/events/{eventId}": {
+      "schema": { "$ref": "#/entities/Event" },
+      "description": "Event management records"
+    },
+    "/venues/{venueId}": {
+      "schema": { "$ref": "#/entities/Venue" },
+      "description": "Campus halls and facility records"
+    },
+    "/registrations/{registrationId}": {
+      "schema": { "$ref": "#/entities/Registration" },
+      "description": "Event tickets and participant admission records"
+    },
+    "/volunteers/{volunteerId}": {
+      "schema": { "$ref": "#/entities/Volunteer" },
+      "description": "Volunteer desk assignments"
+    },
+    "/feedbacks/{feedbackId}": {
+      "schema": { "$ref": "#/entities/Feedback" },
+      "description": "Post-event participant feedback submissions"
+    },
+    "/notifications/{notificationId}": {
+      "schema": { "$ref": "#/entities/Notification" },
+      "description": "User alerts and event announcements"
+    }
+  }
+}
