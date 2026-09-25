@@ -61,4 +61,4 @@ Team Name : Digital Innovators
 Team Member : Arjun S
               Abishek A
 Department : B.E - CSE
-College : Mahendra Institute of Technology
+College : Mahendra Institute of Technology 
